@@ -1,10 +1,3 @@
-# [Backstage](https://backstage.io)
+# WIP and just for fun local Control Center based on Backstage
 
-This is your newly scaffolded Backstage App, Good Luck!
-
-To start the app, run:
-
-```sh
-yarn install
-yarn start
-```
+![Screenshot](screenshot.png?raw=true)
