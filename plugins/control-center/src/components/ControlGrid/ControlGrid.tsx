@@ -1,4 +1,8 @@
-import { toastApiRef, useApi } from '@backstage/frontend-plugin-api';
+import {
+  fetchApiRef,
+  toastApiRef,
+  useApi,
+} from '@backstage/frontend-plugin-api';
 import { Button, Flex, Grid } from '@backstage/ui';
 import {
   RiPlayLargeFill,
@@ -21,23 +25,48 @@ const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?:
   );
 }
 
-const MyButton = ({ icon, label }: { icon: React.ReactElement; label: string }) => {
+const MyButton = ({
+  icon,
+  label,
+  path,
+}: {
+  icon: React.ReactElement;
+  label: string;
+  path?: string;
+}) => {
   const toastApi = useApi(toastApiRef);
+  const { fetch } = useApi(fetchApiRef);
 
   const [active, setActive] = useState(false);
 
-  const handlePress = () => {
+  const handlePress = async () => {
     setActive(true);
-    setTimeout(() => {
-      setActive(false);
+    try {
+      if (path) {
+        const response = await fetch(`plugin://control-center${path}`, {
+          method: 'POST',
+        });
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
       toastApi.post({
         title: 'Done!',
-        // description: 'Your changes have been saved successfully.',
         status: 'success',
         timeout: 1000,
-        // links: [{ label: 'View entity', href: '/catalog/entity' }],
       });
-    }, 200);
+    } catch (err) {
+      toastApi.post({
+        title: 'Failed',
+        description: err instanceof Error ? err.message : String(err),
+        status: 'danger',
+        timeout: 3000,
+      });
+    } finally {
+      setActive(false);
+    }
   };
 
   return (
@@ -70,13 +99,13 @@ export const ControlGrid = () => {
         <Time label="IST" time={time} timeZone="Asia/Kolkata" />
       </Grid.Root>
       <Grid.Root columns="8" gap="4">
-        <MyButton icon={<RiVolumeMuteFill />} label="Volume Mute" />
-        <MyButton icon={<RiVolumeDownFill />} label="Volume Down" />
-        <MyButton icon={<RiVolumeUpFill />} label="Volume Up" />
-        <MyButton icon={<RiPlayLargeFill />} label="Play" />
-        <MyButton icon={<RiPauseLargeFill />} label="Pause" />
-        <MyButton icon={<RiMicLine />} label="Mic On" />
-        <MyButton icon={<RiMicOffLine />} label="Mic Off" />
+        <MyButton icon={<RiVolumeMuteFill />} label="Volume Mute" path="/audio/volume-mute" />
+        <MyButton icon={<RiVolumeDownFill />} label="Volume Down" path="/audio/volume-down" />
+        <MyButton icon={<RiVolumeUpFill />} label="Volume Up" path="/audio/volume-up" />
+        <MyButton icon={<RiPlayLargeFill />} label="Play" path="/media/play" />
+        <MyButton icon={<RiPauseLargeFill />} label="Pause" path="/media/pause" />
+        <MyButton icon={<RiMicLine />} label="Mic On" path="/audio/mic-on" />
+        <MyButton icon={<RiMicOffLine />} label="Mic Off" path="/audio/mic-off" />
         <MyButton icon={<RiMicAiLine />} label="Mic AI" />
       </Grid.Root>
       <Grid.Root columns="8" gap="4">

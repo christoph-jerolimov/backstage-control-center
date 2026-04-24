@@ -4,13 +4,16 @@ import { z } from 'zod/v3';
 import express from 'express';
 import Router from 'express-promise-router';
 import { todoListServiceRef } from './services/TodoListService';
+import { audioControlServiceRef } from './services/AudioControlService';
 
 export async function createRouter({
   httpAuth,
   todoList,
+  audioControl,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
+  audioControl: typeof audioControlServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -46,6 +49,24 @@ export async function createRouter({
   router.get('/todos/:id', async (req, res) => {
     res.json(await todoList.getTodo({ id: req.params.id }));
   });
+
+  const audioActions: Record<string, () => Promise<void>> = {
+    '/audio/volume-up': () => audioControl.volumeUp(),
+    '/audio/volume-down': () => audioControl.volumeDown(),
+    '/audio/volume-mute': () => audioControl.toggleSinkMute(),
+    '/audio/mic-on': () => audioControl.micOn(),
+    '/audio/mic-off': () => audioControl.micOff(),
+    '/media/play': () => audioControl.play(),
+    '/media/pause': () => audioControl.pause(),
+  };
+
+  for (const [path, run] of Object.entries(audioActions)) {
+    router.post(path, async (req, res) => {
+      await httpAuth.credentials(req, { allow: ['user'] });
+      await run();
+      res.status(204).end();
+    });
+  }
 
   return router;
 }

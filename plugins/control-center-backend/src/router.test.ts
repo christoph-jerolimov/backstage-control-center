@@ -8,6 +8,7 @@ import request from 'supertest';
 
 import { createRouter } from './router';
 import { todoListServiceRef } from './services/TodoListService';
+import { audioControlServiceRef } from './services/AudioControlService';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -21,6 +22,7 @@ const mockTodoItem = {
 describe('createRouter', () => {
   let app: express.Express;
   let todoList: jest.Mocked<typeof todoListServiceRef.T>;
+  let audioControl: jest.Mocked<typeof audioControlServiceRef.T>;
 
   beforeEach(async () => {
     todoList = {
@@ -28,9 +30,19 @@ describe('createRouter', () => {
       listTodos: jest.fn(),
       getTodo: jest.fn(),
     };
+    audioControl = {
+      volumeUp: jest.fn(),
+      volumeDown: jest.fn(),
+      toggleSinkMute: jest.fn(),
+      micOn: jest.fn(),
+      micOff: jest.fn(),
+      play: jest.fn(),
+      pause: jest.fn(),
+    };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
       todoList,
+      audioControl,
     });
     app = express();
     app.use(router);
