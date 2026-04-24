@@ -5,7 +5,7 @@ import {
   registerMswTestHooks,
   renderInTestApp,
 } from '@backstage/frontend-test-utils';
-import { TodoPage } from './TodoPage';
+import { TodoPage } from './ControlCenterPage';
 
 describe('TodoPage', () => {
   const server = setupServer();

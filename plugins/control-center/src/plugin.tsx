@@ -13,8 +13,8 @@ export const page = PageBlueprint.make({
     path: '/control-center',
     routeRef: rootRouteRef,
     loader: () =>
-      import('./components/TodoPage').then(m => (
-        <m.TodoPage />
+      import('./components/ControlCenterPage').then(m => (
+        <m.ControlCenterPage />
       )),
   },
 });
