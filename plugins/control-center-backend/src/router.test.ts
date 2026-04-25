@@ -10,6 +10,7 @@ import { createRouter } from './router';
 import { todoListServiceRef } from './services/TodoListService';
 import { audioControlServiceRef } from './services/AudioControlService';
 import { windowControlServiceRef } from './services/WindowControlService';
+import { slackStatusServiceRef } from './services/SlackStatusService';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -25,6 +26,7 @@ describe('createRouter', () => {
   let todoList: jest.Mocked<typeof todoListServiceRef.T>;
   let audioControl: jest.Mocked<typeof audioControlServiceRef.T>;
   let windowControl: jest.Mocked<typeof windowControlServiceRef.T>;
+  let slackStatus: jest.Mocked<typeof slackStatusServiceRef.T>;
 
   beforeEach(async () => {
     todoList = {
@@ -45,11 +47,15 @@ describe('createRouter', () => {
       tileLeft: jest.fn(),
       tileRight: jest.fn(),
     };
+    slackStatus = {
+      setPreset: jest.fn(),
+    };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
       todoList,
       audioControl,
       windowControl,
+      slackStatus,
     });
     app = express();
     app.use(router);
@@ -65,6 +71,21 @@ describe('createRouter', () => {
 
     expect(response.status).toBe(201);
     expect(response.body).toEqual(mockTodoItem);
+  });
+
+  it.each([
+    ['online'],
+    ['afk'],
+    ['focus'],
+    ['lunch'],
+    ['meeting'],
+  ])('should set the Slack %s status', async preset => {
+    slackStatus.setPreset.mockResolvedValue();
+
+    const response = await request(app).post(`/slack/status/${preset}`);
+
+    expect(response.status).toBe(204);
+    expect(slackStatus.setPreset).toHaveBeenCalledWith(preset);
   });
 
   it('should not allow unauthenticated requests to create a TODO', async () => {

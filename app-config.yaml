@@ -64,6 +64,13 @@ integrations:
     #   apiBaseUrl: https://ghe.example.net/api/v3
     #   token: ${GHE_TOKEN}
 
+# Slack user token used by the control-center backend to set the current user's
+# Slack status from the Status: … buttons. Requires a `xoxp-` user token with
+# the `users.profile:write` scope (plus `dnd:write` if Focus mode should also
+# toggle Do Not Disturb). The buttons are simply no-ops when this is unset.
+slack:
+  userToken: ${SLACK_USER_TOKEN}
+
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.

@@ -6,17 +6,20 @@ import Router from 'express-promise-router';
 import { todoListServiceRef } from './services/TodoListService';
 import { audioControlServiceRef } from './services/AudioControlService';
 import { windowControlServiceRef } from './services/WindowControlService';
+import { slackStatusServiceRef } from './services/SlackStatusService';
 
 export async function createRouter({
   httpAuth,
   todoList,
   audioControl,
   windowControl,
+  slackStatus,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
   audioControl: typeof audioControlServiceRef.T;
   windowControl: typeof windowControlServiceRef.T;
+  slackStatus: typeof slackStatusServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -63,6 +66,11 @@ export async function createRouter({
     '/media/pause': () => audioControl.pause(),
     '/window/tile-left': () => windowControl.tileLeft(),
     '/window/tile-right': () => windowControl.tileRight(),
+    '/slack/status/online': () => slackStatus.setPreset('online'),
+    '/slack/status/afk': () => slackStatus.setPreset('afk'),
+    '/slack/status/focus': () => slackStatus.setPreset('focus'),
+    '/slack/status/lunch': () => slackStatus.setPreset('lunch'),
+    '/slack/status/meeting': () => slackStatus.setPreset('meeting'),
   };
 
   for (const [path, run] of Object.entries(commandActions)) {

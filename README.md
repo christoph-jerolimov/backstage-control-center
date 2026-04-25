@@ -74,3 +74,38 @@ of the above is missing, so the failure mode is visible in the logs rather
 than only at button-press time.
 
 Only Linux/Wayland is supported.
+
+## Slack status buttons
+
+The five **Status: …** buttons set the user's Slack status by calling Slack's
+`users.profile.set` Web API from the backend:
+
+| Button           | `status_text`         | `status_emoji`             |
+| ---------------- | --------------------- | -------------------------- |
+| Status: Online   | _(cleared)_           | _(cleared)_                |
+| Status: Afk      | `Away from keyboard`  | `:walking:`                |
+| Status: Focus    | `Focusing`            | `:headphones:`             |
+| Status: Lunch    | `Out for lunch`       | `:burrito:`                |
+| Status: Meeting  | `In a meeting`        | `:spiral_calendar_pad:`    |
+
+Focus mode additionally enables Do Not Disturb for 60 minutes via
+`dnd.setSnooze`; switching back to **Online** ends the snooze.
+
+### Operational requirement
+
+You need a Slack **user** OAuth token (the one starting with `xoxp-`) with at
+least the `users.profile:write` scope, plus `dnd:write` if you want Focus
+mode to also toggle Do Not Disturb. Bot tokens (`xoxb-`) cannot change a
+user's profile and will not work.
+
+Configure the token in `app-config.yaml` (or, more typically, via an env
+var):
+
+```yaml
+slack:
+  userToken: ${SLACK_USER_TOKEN}
+```
+
+The backend calls `auth.test` once at startup and logs a warning if the
+token is missing or rejected, so the failure mode is visible in the logs
+rather than only at button-press time.
