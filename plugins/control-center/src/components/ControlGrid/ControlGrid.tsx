@@ -115,11 +115,11 @@ export const ControlGrid = () => {
         <MyButton icon={<RiLayoutRight2Fill />} label="Tile Right" path="/window/tile-right" />
       </Grid.Root>
       <Grid.Root columns="8" gap="4">
-        <MyButton icon={<div>👩🏻‍💻</div>} label="Status: Online" />
-        <MyButton icon={<div>💬</div>} label="Status: Afk" />
-        <MyButton icon={<div>🎧</div>} label="Status: Focus" />
-        <MyButton icon={<div>🌯</div>} label="Status: Lunch" />
-        <MyButton icon={<div>💬</div>} label="Status: Meeting" />
+        <MyButton icon={<div>👩🏻‍💻</div>} label="Status: Online" path="/slack/status/online" />
+        <MyButton icon={<div>💬</div>} label="Status: Afk" path="/slack/status/afk" />
+        <MyButton icon={<div>🎧</div>} label="Status: Focus" path="/slack/status/focus" />
+        <MyButton icon={<div>🌯</div>} label="Status: Lunch" path="/slack/status/lunch" />
+        <MyButton icon={<div>💬</div>} label="Status: Meeting" path="/slack/status/meeting" />
       </Grid.Root>
     </Flex>
   );
