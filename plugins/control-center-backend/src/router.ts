@@ -5,15 +5,18 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { todoListServiceRef } from './services/TodoListService';
 import { audioControlServiceRef } from './services/AudioControlService';
+import { windowControlServiceRef } from './services/WindowControlService';
 
 export async function createRouter({
   httpAuth,
   todoList,
   audioControl,
+  windowControl,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
   audioControl: typeof audioControlServiceRef.T;
+  windowControl: typeof windowControlServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -50,7 +53,7 @@ export async function createRouter({
     res.json(await todoList.getTodo({ id: req.params.id }));
   });
 
-  const audioActions: Record<string, () => Promise<void>> = {
+  const commandActions: Record<string, () => Promise<void>> = {
     '/audio/volume-up': () => audioControl.volumeUp(),
     '/audio/volume-down': () => audioControl.volumeDown(),
     '/audio/volume-mute': () => audioControl.toggleSinkMute(),
@@ -58,9 +61,11 @@ export async function createRouter({
     '/audio/mic-off': () => audioControl.micOff(),
     '/media/play': () => audioControl.play(),
     '/media/pause': () => audioControl.pause(),
+    '/window/tile-left': () => windowControl.tileLeft(),
+    '/window/tile-right': () => windowControl.tileRight(),
   };
 
-  for (const [path, run] of Object.entries(audioActions)) {
+  for (const [path, run] of Object.entries(commandActions)) {
     router.post(path, async (req, res) => {
       await httpAuth.credentials(req, { allow: ['user'] });
       await run();

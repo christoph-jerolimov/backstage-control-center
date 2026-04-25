@@ -37,3 +37,40 @@ reach the session bus.
 
 `playerctl` (used for Play / Pause) additionally needs an active MPRIS-capable
 media player on the same session — Spotify, most browsers, `mpv`, etc.
+
+## Window rearrange buttons
+
+The **Tile Left** and **Tile Right** buttons rearrange the currently focused
+window. Wayland compositors do not expose external window-control CLIs in a
+portable way (e.g. GNOME/Mutter has no `swaymsg`/`hyprctl` equivalent and the
+GNOME Shell `Eval` D-Bus method has been locked down since GNOME 41), so the
+backend instead simulates the compositor's built-in tiling shortcuts via
+[`ydotool`](https://github.com/ReimuNotMoe/ydotool):
+
+| Button     | Keystroke sent  | Command                                |
+| ---------- | --------------- | -------------------------------------- |
+| Tile Left  | `Super` + `←`   | `ydotool key 125:1 105:1 105:0 125:0`  |
+| Tile Right | `Super` + `→`   | `ydotool key 125:1 106:1 106:0 125:0`  |
+
+The keycodes (`125`, `105`, `106`) are `KEY_LEFTMETA`, `KEY_LEFT`, `KEY_RIGHT`
+from `linux/input-event-codes.h`. The host was tested on GNOME / Wayland,
+where `Super+Left` and `Super+Right` are bound to half-screen tiling out of
+the box; on other compositors that honour the same shortcut (KDE, most
+wlroots-based ones with default keymaps) it should work without changes.
+
+### Operational requirement
+
+`ydotool` writes synthetic input events through `/dev/uinput`, which bypasses
+Wayland's input-isolation rules but requires:
+
+- the `ydotool` and `ydotoold` packages installed on the host,
+- the `ydotoold` daemon running (e.g. `systemctl --user start ydotoold`),
+- the user running the backend to have access to `/dev/uinput` (typically by
+  being in the `input` group) and to the ydotool socket — set
+  `YDOTOOL_SOCKET` if the daemon's socket is in a non-default location.
+
+The backend runs `ydotool --help` once at startup and logs a warning if any
+of the above is missing, so the failure mode is visible in the logs rather
+than only at button-press time.
+
+Only Linux/Wayland is supported.
