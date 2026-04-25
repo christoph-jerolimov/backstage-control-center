@@ -7,6 +7,7 @@ import { todoListServiceRef } from './services/TodoListService';
 import { audioControlServiceRef } from './services/AudioControlService';
 import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
+import { whisperServiceRef } from './services/WhisperService';
 
 export async function createRouter({
   httpAuth,
@@ -14,15 +15,44 @@ export async function createRouter({
   audioControl,
   windowControl,
   slackStatus,
+  whisper,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
   audioControl: typeof audioControlServiceRef.T;
   windowControl: typeof windowControlServiceRef.T;
   slackStatus: typeof slackStatusServiceRef.T;
+  whisper: typeof whisperServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
+
+  router.post(
+    '/ai/transcribe',
+    express.raw({ type: 'audio/*', limit: '25mb' }),
+    async (req, res) => {
+      await httpAuth.credentials(req, { allow: ['user'] });
+      const audio = req.body as Buffer;
+      if (!Buffer.isBuffer(audio) || audio.length === 0) {
+        throw new InputError(
+          'Request body must be a non-empty audio/* payload',
+        );
+      }
+      const mimeType =
+        (req.headers['content-type'] as string | undefined) ?? 'audio/webm';
+      const filename = mimeType.includes('webm')
+        ? 'audio.webm'
+        : mimeType.includes('ogg')
+          ? 'audio.ogg'
+          : mimeType.includes('mp4')
+            ? 'audio.mp4'
+            : mimeType.includes('wav')
+              ? 'audio.wav'
+              : 'audio.bin';
+      const text = await whisper.transcribe(audio, filename, mimeType);
+      res.json({ text });
+    },
+  );
 
   // TEMPLATE NOTE:
   // Zod is a powerful library for data validation and recommended in particular

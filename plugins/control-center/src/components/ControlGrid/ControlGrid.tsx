@@ -9,6 +9,7 @@ import {
   RiLayoutRight2Fill,
   RiPlayLargeFill,
   RiPauseLargeFill,
+  RiMicAiFill,
   RiMicAiLine,
   RiMicLine,
   RiMicOffLine,
@@ -17,6 +18,7 @@ import {
   RiVolumeUpFill,
 } from '@remixicon/react';
 import { useState } from 'react';
+import { MicAiButton } from './MicAiButtons';
 
 const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?: string }) => {
   return (
@@ -108,7 +110,9 @@ export const ControlGrid = () => {
         <MyButton icon={<RiPauseLargeFill />} label="Pause" path="/media/pause" />
         <MyButton icon={<RiMicLine />} label="Mic On" path="/audio/mic-on" />
         <MyButton icon={<RiMicOffLine />} label="Mic Off" path="/audio/mic-off" />
-        <MyButton icon={<RiMicAiLine />} label="Mic AI" />
+        <MicAiButton mode="toggle" icon={<RiMicAiLine />} label="Mic AI" />
+        <MicAiButton mode="hold" icon={<RiMicLine />} label="Mic AI hold" />
+        <MicAiButton mode="vad" icon={<RiMicAiFill />} label="Mic AI auto" />
       </Grid.Root>
       <Grid.Root columns="8" gap="4">
         <MyButton icon={<RiLayoutLeft2Fill />} label="Tile Left" path="/window/tile-left" />
