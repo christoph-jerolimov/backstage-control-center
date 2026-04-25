@@ -5,6 +5,8 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { Button, Flex, Grid } from '@backstage/ui';
 import {
+  RiLayoutLeft2Fill,
+  RiLayoutRight2Fill,
   RiPlayLargeFill,
   RiPauseLargeFill,
   RiMicAiLine,
@@ -107,6 +109,10 @@ export const ControlGrid = () => {
         <MyButton icon={<RiMicLine />} label="Mic On" path="/audio/mic-on" />
         <MyButton icon={<RiMicOffLine />} label="Mic Off" path="/audio/mic-off" />
         <MyButton icon={<RiMicAiLine />} label="Mic AI" />
+      </Grid.Root>
+      <Grid.Root columns="8" gap="4">
+        <MyButton icon={<RiLayoutLeft2Fill />} label="Tile Left" path="/window/tile-left" />
+        <MyButton icon={<RiLayoutRight2Fill />} label="Tile Right" path="/window/tile-right" />
       </Grid.Root>
       <Grid.Root columns="8" gap="4">
         <MyButton icon={<div>👩🏻‍💻</div>} label="Status: Online" />

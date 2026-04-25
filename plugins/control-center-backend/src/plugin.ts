@@ -5,6 +5,7 @@ import {
 import { createRouter } from './router';
 import { todoListServiceRef } from './services/TodoListService';
 import { audioControlServiceRef } from './services/AudioControlService';
+import { windowControlServiceRef } from './services/WindowControlService';
 
 /**
  * controlCenterPlugin backend plugin
@@ -20,13 +21,15 @@ export const controlCenterPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         todoList: todoListServiceRef,
         audioControl: audioControlServiceRef,
+        windowControl: windowControlServiceRef,
       },
-      async init({ httpAuth, httpRouter, todoList, audioControl }) {
+      async init({ httpAuth, httpRouter, todoList, audioControl, windowControl }) {
         httpRouter.use(
           await createRouter({
             httpAuth,
             todoList,
             audioControl,
+            windowControl,
           }),
         );
       },
