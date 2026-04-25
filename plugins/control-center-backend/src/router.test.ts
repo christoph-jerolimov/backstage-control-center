@@ -11,6 +11,7 @@ import { todoListServiceRef } from './services/TodoListService';
 import { audioControlServiceRef } from './services/AudioControlService';
 import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
+import { whisperServiceRef } from './services/WhisperService';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -27,6 +28,7 @@ describe('createRouter', () => {
   let audioControl: jest.Mocked<typeof audioControlServiceRef.T>;
   let windowControl: jest.Mocked<typeof windowControlServiceRef.T>;
   let slackStatus: jest.Mocked<typeof slackStatusServiceRef.T>;
+  let whisper: jest.Mocked<typeof whisperServiceRef.T>;
 
   beforeEach(async () => {
     todoList = {
@@ -50,12 +52,16 @@ describe('createRouter', () => {
     slackStatus = {
       setPreset: jest.fn(),
     };
+    whisper = {
+      transcribe: jest.fn(),
+    };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
       todoList,
       audioControl,
       windowControl,
       slackStatus,
+      whisper,
     });
     app = express();
     app.use(router);

@@ -71,6 +71,14 @@ integrations:
 slack:
   userToken: ${SLACK_USER_TOKEN}
 
+# OpenAI credentials used by the control-center backend to transcribe audio
+# captured by the Mic AI buttons via the Whisper API. The Mic AI buttons fail
+# with a clear error when this is unset.
+openai:
+  apiKey: ${OPENAI_API_KEY}
+  # transcriptionModel: whisper-1   # optional override
+  # transcriptionLanguage: en       # optional ISO-639-1; omit for auto-detect
+
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.

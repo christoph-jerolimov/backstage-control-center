@@ -7,6 +7,7 @@ import { todoListServiceRef } from './services/TodoListService';
 import { audioControlServiceRef } from './services/AudioControlService';
 import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
+import { whisperServiceRef } from './services/WhisperService';
 
 /**
  * controlCenterPlugin backend plugin
@@ -24,6 +25,7 @@ export const controlCenterPlugin = createBackendPlugin({
         audioControl: audioControlServiceRef,
         windowControl: windowControlServiceRef,
         slackStatus: slackStatusServiceRef,
+        whisper: whisperServiceRef,
       },
       async init({
         httpAuth,
@@ -32,6 +34,7 @@ export const controlCenterPlugin = createBackendPlugin({
         audioControl,
         windowControl,
         slackStatus,
+        whisper,
       }) {
         httpRouter.use(
           await createRouter({
@@ -40,6 +43,7 @@ export const controlCenterPlugin = createBackendPlugin({
             audioControl,
             windowControl,
             slackStatus,
+            whisper,
           }),
         );
       },
