@@ -11,14 +11,10 @@ import { SidebarLogo } from './SidebarLogo';
 import { SidebarSearchModal } from '@backstage/plugin-search';
 import { UserSettingsSignInAvatar } from '@backstage/plugin-user-settings';
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
-import { useSidebarVisibility } from './useSidebarVisibility';
 
 export const SidebarContent = NavContentBlueprint.make({
   params: {
     component: ({ navItems }) => {
-      const visible = useSidebarVisibility();
-      if (!visible) return null;
-
       const nav = navItems.withComponent(item => (
         <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
       ));
