@@ -9,6 +9,8 @@ import {
   RiLayoutRight2Fill,
   RiPlayLargeFill,
   RiPauseLargeFill,
+  RiSkipBackFill,
+  RiSkipForwardFill,
   RiMicAiFill,
   RiMicAiLine,
   RiMicLine,
@@ -106,8 +108,10 @@ export const ControlGrid = () => {
         <MyButton icon={<RiVolumeMuteFill />} label="Volume Mute" path="/audio/volume-mute" />
         <MyButton icon={<RiVolumeDownFill />} label="Volume Down" path="/audio/volume-down" />
         <MyButton icon={<RiVolumeUpFill />} label="Volume Up" path="/audio/volume-up" />
+        <MyButton icon={<RiSkipBackFill />} label="Previous" path="/media/previous" />
         <MyButton icon={<RiPlayLargeFill />} label="Play" path="/media/play" />
         <MyButton icon={<RiPauseLargeFill />} label="Pause" path="/media/pause" />
+        <MyButton icon={<RiSkipForwardFill />} label="Next" path="/media/next" />
         <MyButton icon={<RiMicLine />} label="Mic On" path="/audio/mic-on" />
         <MyButton icon={<RiMicOffLine />} label="Mic Off" path="/audio/mic-off" />
         <MicAiButton mode="toggle" icon={<RiMicAiLine />} label="Mic AI" />

@@ -44,6 +44,8 @@ describe('createRouter', () => {
       micOff: jest.fn(),
       play: jest.fn(),
       pause: jest.fn(),
+      previous: jest.fn(),
+      next: jest.fn(),
     };
     windowControl = {
       tileLeft: jest.fn(),
