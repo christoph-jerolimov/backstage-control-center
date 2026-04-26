@@ -3,6 +3,8 @@ import {
   toastApiRef,
   useApi,
 } from '@backstage/frontend-plugin-api';
+import { compatWrapper } from '@backstage/core-compat-api';
+import { HomePageCalendar } from '@backstage-community/plugin-gcalendar';
 import { Button, Flex, Grid } from '@backstage/ui';
 import {
   RiLayoutLeft2Fill,
@@ -103,6 +105,9 @@ export const ControlGrid = () => {
       <Grid.Root columns="8" gap="4">
         <Time label="Local" time={time} />
         <Time label="IST" time={time} timeZone="Asia/Kolkata" />
+      </Grid.Root>
+      <Grid.Root columns="1" gap="4">
+        {compatWrapper(<HomePageCalendar />)}
       </Grid.Root>
       <Grid.Root columns="8" gap="4">
         <MyButton icon={<RiVolumeMuteFill />} label="Volume Mute" path="/audio/volume-mute" />
