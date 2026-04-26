@@ -87,6 +87,14 @@ export class AudioControlService {
   async pause(): Promise<void> {
     await this.#run('playerctl', ['pause']);
   }
+
+  async previous(): Promise<void> {
+    await this.#run('playerctl', ['previous']);
+  }
+
+  async next(): Promise<void> {
+    await this.#run('playerctl', ['next']);
+  }
 }
 
 export const audioControlServiceRef = createServiceRef<

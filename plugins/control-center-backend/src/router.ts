@@ -94,6 +94,8 @@ export async function createRouter({
     '/audio/mic-off': () => audioControl.micOff(),
     '/media/play': () => audioControl.play(),
     '/media/pause': () => audioControl.pause(),
+    '/media/previous': () => audioControl.previous(),
+    '/media/next': () => audioControl.next(),
     '/window/tile-left': () => windowControl.tileLeft(),
     '/window/tile-right': () => windowControl.tileRight(),
     '/slack/status/online': () => slackStatus.setPreset('online'),
