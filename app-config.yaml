@@ -99,10 +99,20 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
 auth:
+  environment: development
   # see https://backstage.io/docs/auth/ to learn about auth providers
   providers:
     # See https://backstage.io/docs/auth/guest/provider
     guest: {}
+    # Google OAuth — required by the Google Calendar card. Create credentials
+    # at https://console.cloud.google.com/apis/credentials, enable the Google
+    # Calendar API, and set the redirect URI to
+    # http://localhost:7007/api/auth/google/handler/frame.
+    google:
+      development:
+        clientId: ${AUTH_GOOGLE_CLIENT_ID}
+        clientSecret: ${AUTH_GOOGLE_CLIENT_SECRET}
+        additionalScopes: 'https://www.googleapis.com/auth/calendar.readonly'
   # see https://backstage.io/docs/ai/mcp-actions#client-id-metadata-documents
   # to learn more about client id metadata documents
   experimentalClientIdMetadataDocuments:

@@ -25,6 +25,8 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage-community/plugin-gcalendar": "^0.20.0",
+    "@backstage/core-compat-api": "^0.5.10",
     "@backstage/core-components": "^0.18.9",
     "@backstage/frontend-plugin-api": "^0.16.0",
     "@backstage/theme": "^0.7.3",
