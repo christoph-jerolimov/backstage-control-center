@@ -14,6 +14,9 @@ import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
 import { systemStatsServiceRef } from './services/SystemStatsService';
 import { playlistServiceRef } from './services/PlaylistService';
+import { obsServiceRef } from './services/OBSService';
+import { hueServiceRef } from './services/HueService';
+import { scriptsServiceRef } from './services/ScriptsService';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -33,6 +36,9 @@ describe('createRouter', () => {
   let whisper: jest.Mocked<typeof whisperServiceRef.T>;
   let systemStats: jest.Mocked<typeof systemStatsServiceRef.T>;
   let playlist: jest.Mocked<typeof playlistServiceRef.T>;
+  let obs: jest.Mocked<typeof obsServiceRef.T>;
+  let hue: jest.Mocked<typeof hueServiceRef.T>;
+  let scripts: jest.Mocked<typeof scriptsServiceRef.T>;
 
   beforeEach(async () => {
     todoList = {
@@ -68,6 +74,21 @@ describe('createRouter', () => {
       list: jest.fn().mockReturnValue([]),
       play: jest.fn(),
     };
+    obs = {
+      listScenes: jest.fn().mockReturnValue([]),
+      setScene: jest.fn(),
+      toggleRecording: jest.fn(),
+      toggleStreaming: jest.fn(),
+      toggleVirtualCam: jest.fn(),
+    };
+    hue = {
+      listScenes: jest.fn().mockReturnValue([]),
+      activateScene: jest.fn(),
+    };
+    scripts = {
+      list: jest.fn().mockReturnValue([]),
+      run: jest.fn(),
+    };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
       todoList,
@@ -77,6 +98,9 @@ describe('createRouter', () => {
       whisper,
       systemStats,
       playlist,
+      obs,
+      hue,
+      scripts,
     });
     app = express();
     app.use(router);
@@ -127,6 +151,46 @@ describe('createRouter', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual(stats);
     expect(systemStats.getStats).toHaveBeenCalled();
+  });
+
+  it.each([
+    ['recording', 'toggleRecording'],
+    ['streaming', 'toggleStreaming'],
+    ['virtualcam', 'toggleVirtualCam'],
+  ] as const)('should toggle OBS %s', async (target, method) => {
+    obs[method].mockResolvedValue();
+
+    const response = await request(app).post(`/obs/${target}/toggle`);
+
+    expect(response.status).toBe(204);
+    expect(obs[method]).toHaveBeenCalled();
+  });
+
+  it('should activate an OBS scene by id', async () => {
+    obs.setScene.mockResolvedValue();
+
+    const response = await request(app).post('/obs/scenes/live');
+
+    expect(response.status).toBe(204);
+    expect(obs.setScene).toHaveBeenCalledWith('live');
+  });
+
+  it('should activate a Hue scene by id', async () => {
+    hue.activateScene.mockResolvedValue();
+
+    const response = await request(app).post('/hue/scenes/focus');
+
+    expect(response.status).toBe(204);
+    expect(hue.activateScene).toHaveBeenCalledWith('focus');
+  });
+
+  it('should run a script by id', async () => {
+    scripts.run.mockResolvedValue();
+
+    const response = await request(app).post('/scripts/deploy/run');
+
+    expect(response.status).toBe(204);
+    expect(scripts.run).toHaveBeenCalledWith('deploy');
   });
 
   it('should not allow unauthenticated requests to create a TODO', async () => {

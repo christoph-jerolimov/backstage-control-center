@@ -25,12 +25,10 @@ import { useEffect, useState } from 'react';
 import { MicAiButton } from './MicAiButtons';
 import { SystemStatsCards } from './SystemStatsCards';
 
-type PlaylistEntry = {
+type ButtonEntry = {
   id: string;
   label: string;
   icon?: string;
-  provider: 'spotify' | 'qobuz';
-  uri: string;
 };
 
 const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?: string }) => {
@@ -102,22 +100,16 @@ const MyButton = ({
   );
 };
 
-export const ControlGrid = () => {
-  const [time, setTime] = useState(new Date());
-  // update time every 10 seconds
-  setInterval(() => {
-    setTime(new Date());
-  }, 10000);
-
+function useDynamicButtons(listPath: string): ButtonEntry[] {
   const { fetch } = useApi(fetchApiRef);
-  const [playlists, setPlaylists] = useState<PlaylistEntry[]>([]);
+  const [entries, setEntries] = useState<ButtonEntry[]>([]);
   useEffect(() => {
     let cancelled = false;
-    fetch('plugin://control-center/playlists')
+    fetch(`plugin://control-center${listPath}`)
       .then(res => (res.ok ? res.json() : []))
       .then(data => {
         if (!cancelled && Array.isArray(data)) {
-          setPlaylists(data);
+          setEntries(data);
         }
       })
       .catch(() => {
@@ -126,7 +118,45 @@ export const ControlGrid = () => {
     return () => {
       cancelled = true;
     };
-  }, [fetch]);
+  }, [fetch, listPath]);
+  return entries;
+}
+
+const DynamicButtonRow = ({
+  entries,
+  pathFor,
+  defaultIcon,
+}: {
+  entries: ButtonEntry[];
+  pathFor: (entry: ButtonEntry) => string;
+  defaultIcon: string;
+}) => {
+  if (entries.length === 0) return null;
+  return (
+    <Grid.Root columns="8" gap="4">
+      {entries.map(entry => (
+        <MyButton
+          key={entry.id}
+          icon={<div>{entry.icon ?? defaultIcon}</div>}
+          label={entry.label}
+          path={pathFor(entry)}
+        />
+      ))}
+    </Grid.Root>
+  );
+};
+
+export const ControlGrid = () => {
+  const [time, setTime] = useState(new Date());
+  // update time every 10 seconds
+  setInterval(() => {
+    setTime(new Date());
+  }, 10000);
+
+  const playlists = useDynamicButtons('/playlists');
+  const obsScenes = useDynamicButtons('/obs/scenes');
+  const hueScenes = useDynamicButtons('/hue/scenes');
+  const scripts = useDynamicButtons('/scripts');
 
   return (
     <Flex direction="column" gap="4" py="4">
@@ -152,18 +182,31 @@ export const ControlGrid = () => {
         <MicAiButton mode="hold" icon={<RiMicLine />} label="Mic AI hold" />
         <MicAiButton mode="vad" icon={<RiMicAiFill />} label="Mic AI auto" />
       </Grid.Root>
-      {playlists.length > 0 && (
-        <Grid.Root columns="8" gap="4">
-          {playlists.map(p => (
-            <MyButton
-              key={p.id}
-              icon={<div>{p.icon ?? '🎵'}</div>}
-              label={p.label}
-              path={`/playlists/${p.id}/play`}
-            />
-          ))}
-        </Grid.Root>
-      )}
+      <DynamicButtonRow
+        entries={playlists}
+        pathFor={p => `/playlists/${p.id}/play`}
+        defaultIcon="🎵"
+      />
+      <Grid.Root columns="8" gap="4">
+        <MyButton icon={<div>⏺️</div>} label="OBS Record" path="/obs/recording/toggle" />
+        <MyButton icon={<div>📡</div>} label="OBS Stream" path="/obs/streaming/toggle" />
+        <MyButton icon={<div>📷</div>} label="OBS Virtual Cam" path="/obs/virtualcam/toggle" />
+      </Grid.Root>
+      <DynamicButtonRow
+        entries={obsScenes}
+        pathFor={s => `/obs/scenes/${s.id}`}
+        defaultIcon="🎬"
+      />
+      <DynamicButtonRow
+        entries={hueScenes}
+        pathFor={s => `/hue/scenes/${s.id}`}
+        defaultIcon="💡"
+      />
+      <DynamicButtonRow
+        entries={scripts}
+        pathFor={s => `/scripts/${s.id}/run`}
+        defaultIcon="⚙️"
+      />
       <Grid.Root columns="8" gap="4">
         <MyButton icon={<RiLayoutLeft2Fill />} label="Tile Left" path="/window/tile-left" />
         <MyButton icon={<RiLayoutRight2Fill />} label="Tile Right" path="/window/tile-right" />
