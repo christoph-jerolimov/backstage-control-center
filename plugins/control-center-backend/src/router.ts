@@ -9,6 +9,7 @@ import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
 import { systemStatsServiceRef } from './services/SystemStatsService';
+import { playlistServiceRef } from './services/PlaylistService';
 
 export async function createRouter({
   httpAuth,
@@ -18,6 +19,7 @@ export async function createRouter({
   slackStatus,
   whisper,
   systemStats,
+  playlist,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
@@ -26,6 +28,7 @@ export async function createRouter({
   slackStatus: typeof slackStatusServiceRef.T;
   whisper: typeof whisperServiceRef.T;
   systemStats: typeof systemStatsServiceRef.T;
+  playlist: typeof playlistServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -92,6 +95,17 @@ export async function createRouter({
   router.get('/system/stats', async (req, res) => {
     await httpAuth.credentials(req, { allow: ['user'] });
     res.json(await systemStats.getStats());
+  });
+
+  router.get('/playlists', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    res.json(playlist.list());
+  });
+
+  router.post('/playlists/:id/play', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    await playlist.play(req.params.id);
+    res.status(204).end();
   });
 
   const commandActions: Record<string, () => Promise<void>> = {

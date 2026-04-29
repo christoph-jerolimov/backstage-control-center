@@ -79,6 +79,22 @@ openai:
   # transcriptionModel: whisper-1   # optional override
   # transcriptionLanguage: en       # optional ISO-639-1; omit for auto-detect
 
+# Optional list of playlists to render as quick-launch buttons. Each entry is
+# triggered via `playerctl --player=<provider> open <uri>`, so the matching
+# desktop app (Spotify or Qobuz) must already be running on the same machine
+# as the backend. The button row is hidden when this list is empty.
+# playlists:
+#   - id: focus
+#     label: Focus
+#     icon: 🎯
+#     provider: spotify
+#     uri: spotify:playlist:37i9dQZF1DWZeKCadgRdKQ
+#   - id: chill
+#     label: Chill
+#     icon: 🌊
+#     provider: qobuz
+#     uri: https://play.qobuz.com/playlist/12345
+
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.

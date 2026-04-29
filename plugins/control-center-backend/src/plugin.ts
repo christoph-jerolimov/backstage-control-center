@@ -9,6 +9,7 @@ import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
 import { systemStatsServiceRef } from './services/SystemStatsService';
+import { playlistServiceRef } from './services/PlaylistService';
 
 /**
  * controlCenterPlugin backend plugin
@@ -28,6 +29,7 @@ export const controlCenterPlugin = createBackendPlugin({
         slackStatus: slackStatusServiceRef,
         whisper: whisperServiceRef,
         systemStats: systemStatsServiceRef,
+        playlist: playlistServiceRef,
       },
       async init({
         httpAuth,
@@ -38,6 +40,7 @@ export const controlCenterPlugin = createBackendPlugin({
         slackStatus,
         whisper,
         systemStats,
+        playlist,
       }) {
         httpRouter.use(
           await createRouter({
@@ -48,6 +51,7 @@ export const controlCenterPlugin = createBackendPlugin({
             slackStatus,
             whisper,
             systemStats,
+            playlist,
           }),
         );
       },

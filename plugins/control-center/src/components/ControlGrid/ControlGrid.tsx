@@ -21,9 +21,17 @@ import {
   RiVolumeMuteFill,
   RiVolumeUpFill,
 } from '@remixicon/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MicAiButton } from './MicAiButtons';
 import { SystemStatsCards } from './SystemStatsCards';
+
+type PlaylistEntry = {
+  id: string;
+  label: string;
+  icon?: string;
+  provider: 'spotify' | 'qobuz';
+  uri: string;
+};
 
 const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?: string }) => {
   return (
@@ -101,6 +109,25 @@ export const ControlGrid = () => {
     setTime(new Date());
   }, 10000);
 
+  const { fetch } = useApi(fetchApiRef);
+  const [playlists, setPlaylists] = useState<PlaylistEntry[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('plugin://control-center/playlists')
+      .then(res => (res.ok ? res.json() : []))
+      .then(data => {
+        if (!cancelled && Array.isArray(data)) {
+          setPlaylists(data);
+        }
+      })
+      .catch(() => {
+        // Silently ignore: empty list just hides the row.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [fetch]);
+
   return (
     <Flex direction="column" gap="4" py="4">
       <Grid.Root columns="8" gap="4">
@@ -125,6 +152,18 @@ export const ControlGrid = () => {
         <MicAiButton mode="hold" icon={<RiMicLine />} label="Mic AI hold" />
         <MicAiButton mode="vad" icon={<RiMicAiFill />} label="Mic AI auto" />
       </Grid.Root>
+      {playlists.length > 0 && (
+        <Grid.Root columns="8" gap="4">
+          {playlists.map(p => (
+            <MyButton
+              key={p.id}
+              icon={<div>{p.icon ?? '🎵'}</div>}
+              label={p.label}
+              path={`/playlists/${p.id}/play`}
+            />
+          ))}
+        </Grid.Root>
+      )}
       <Grid.Root columns="8" gap="4">
         <MyButton icon={<RiLayoutLeft2Fill />} label="Tile Left" path="/window/tile-left" />
         <MyButton icon={<RiLayoutRight2Fill />} label="Tile Right" path="/window/tile-right" />

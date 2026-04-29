@@ -13,6 +13,7 @@ import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
 import { systemStatsServiceRef } from './services/SystemStatsService';
+import { playlistServiceRef } from './services/PlaylistService';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -31,6 +32,7 @@ describe('createRouter', () => {
   let slackStatus: jest.Mocked<typeof slackStatusServiceRef.T>;
   let whisper: jest.Mocked<typeof whisperServiceRef.T>;
   let systemStats: jest.Mocked<typeof systemStatsServiceRef.T>;
+  let playlist: jest.Mocked<typeof playlistServiceRef.T>;
 
   beforeEach(async () => {
     todoList = {
@@ -62,6 +64,10 @@ describe('createRouter', () => {
     systemStats = {
       getStats: jest.fn(),
     };
+    playlist = {
+      list: jest.fn().mockReturnValue([]),
+      play: jest.fn(),
+    };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
       todoList,
@@ -70,6 +76,7 @@ describe('createRouter', () => {
       slackStatus,
       whisper,
       systemStats,
+      playlist,
     });
     app = express();
     app.use(router);
