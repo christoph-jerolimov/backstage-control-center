@@ -12,6 +12,7 @@ import { audioControlServiceRef } from './services/AudioControlService';
 import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
+import { systemStatsServiceRef } from './services/SystemStatsService';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -29,6 +30,7 @@ describe('createRouter', () => {
   let windowControl: jest.Mocked<typeof windowControlServiceRef.T>;
   let slackStatus: jest.Mocked<typeof slackStatusServiceRef.T>;
   let whisper: jest.Mocked<typeof whisperServiceRef.T>;
+  let systemStats: jest.Mocked<typeof systemStatsServiceRef.T>;
 
   beforeEach(async () => {
     todoList = {
@@ -57,6 +59,9 @@ describe('createRouter', () => {
     whisper = {
       transcribe: jest.fn(),
     };
+    systemStats = {
+      getStats: jest.fn(),
+    };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
       todoList,
@@ -64,6 +69,7 @@ describe('createRouter', () => {
       windowControl,
       slackStatus,
       whisper,
+      systemStats,
     });
     app = express();
     app.use(router);
@@ -94,6 +100,26 @@ describe('createRouter', () => {
 
     expect(response.status).toBe(204);
     expect(slackStatus.setPreset).toHaveBeenCalledWith(preset);
+  });
+
+  it('should return system stats', async () => {
+    const stats = {
+      cpu: { usagePercent: 12.5, cores: 8 },
+      memory: {
+        totalBytes: 16_000_000_000,
+        usedBytes: 8_000_000_000,
+        freeBytes: 8_000_000_000,
+        usagePercent: 50,
+      },
+      timestamp: new Date().toISOString(),
+    };
+    systemStats.getStats.mockResolvedValue(stats);
+
+    const response = await request(app).get('/system/stats');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(stats);
+    expect(systemStats.getStats).toHaveBeenCalled();
   });
 
   it('should not allow unauthenticated requests to create a TODO', async () => {

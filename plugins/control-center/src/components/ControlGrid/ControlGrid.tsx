@@ -23,6 +23,7 @@ import {
 } from '@remixicon/react';
 import { useState } from 'react';
 import { MicAiButton } from './MicAiButtons';
+import { SystemStatsCards } from './SystemStatsCards';
 
 const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?: string }) => {
   return (
@@ -106,6 +107,7 @@ export const ControlGrid = () => {
         <Time label="Local" time={time} />
         <Time label="IST" time={time} timeZone="Asia/Kolkata" />
       </Grid.Root>
+      <SystemStatsCards />
       <Grid.Root columns="1" gap="4">
         {compatWrapper(<HomePageCalendar />)}
       </Grid.Root>

@@ -8,6 +8,7 @@ import { audioControlServiceRef } from './services/AudioControlService';
 import { windowControlServiceRef } from './services/WindowControlService';
 import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
+import { systemStatsServiceRef } from './services/SystemStatsService';
 
 export async function createRouter({
   httpAuth,
@@ -16,6 +17,7 @@ export async function createRouter({
   windowControl,
   slackStatus,
   whisper,
+  systemStats,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
@@ -23,6 +25,7 @@ export async function createRouter({
   windowControl: typeof windowControlServiceRef.T;
   slackStatus: typeof slackStatusServiceRef.T;
   whisper: typeof whisperServiceRef.T;
+  systemStats: typeof systemStatsServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -84,6 +87,11 @@ export async function createRouter({
 
   router.get('/todos/:id', async (req, res) => {
     res.json(await todoList.getTodo({ id: req.params.id }));
+  });
+
+  router.get('/system/stats', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    res.json(await systemStats.getStats());
   });
 
   const commandActions: Record<string, () => Promise<void>> = {
