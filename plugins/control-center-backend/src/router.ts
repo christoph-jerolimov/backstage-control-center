@@ -11,6 +11,20 @@ import { whisperServiceRef } from './services/WhisperService';
 import { systemStatsServiceRef } from './services/SystemStatsService';
 import { playlistServiceRef } from './services/PlaylistService';
 
+const AUDIO_FILENAMES: Array<[string, string]> = [
+  ['webm', 'audio.webm'],
+  ['ogg', 'audio.ogg'],
+  ['mp4', 'audio.mp4'],
+  ['wav', 'audio.wav'],
+];
+
+function pickAudioFilename(mimeType: string): string {
+  for (const [needle, name] of AUDIO_FILENAMES) {
+    if (mimeType.includes(needle)) return name;
+  }
+  return 'audio.bin';
+}
+
 export async function createRouter({
   httpAuth,
   todoList,
@@ -46,15 +60,7 @@ export async function createRouter({
       }
       const mimeType =
         (req.headers['content-type'] as string | undefined) ?? 'audio/webm';
-      const filename = mimeType.includes('webm')
-        ? 'audio.webm'
-        : mimeType.includes('ogg')
-          ? 'audio.ogg'
-          : mimeType.includes('mp4')
-            ? 'audio.mp4'
-            : mimeType.includes('wav')
-              ? 'audio.wav'
-              : 'audio.bin';
+      const filename = pickAudioFilename(mimeType);
       const text = await whisper.transcribe(audio, filename, mimeType);
       res.json({ text });
     },

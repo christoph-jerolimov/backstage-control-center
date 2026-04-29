@@ -25,7 +25,7 @@ function useTodos() {
 }
 
 export const ControlCenterPage = () => {
-  const { value: todos, loading, error } = useTodos();
+  const { loading } = useTodos();
 
   if (loading) {
     return <Progress />;
