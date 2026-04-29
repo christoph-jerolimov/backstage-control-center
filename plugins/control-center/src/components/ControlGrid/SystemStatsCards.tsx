@@ -69,7 +69,7 @@ export const SystemStatsCards = () => {
   }, [fetch]);
 
   const cpuValue =
-    stats?.cpu.usagePercent != null
+    stats?.cpu.usagePercent !== undefined && stats.cpu.usagePercent !== null
       ? `${stats.cpu.usagePercent.toFixed(1)}%`
       : '—';
   const cpuDetail = stats ? `${stats.cpu.cores} cores` : ' ';

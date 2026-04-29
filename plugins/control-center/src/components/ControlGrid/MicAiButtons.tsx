@@ -36,94 +36,19 @@ async function copyTranscript(text: string) {
   }
 }
 
-export const MicAiButton = ({ mode, icon, label }: MicAiButtonProps) => {
-  const toastApi = useApi(toastApiRef);
-
-  const onTranscript = useCallback(
-    (text: string) => {
-      const trimmed = text.trim();
-      if (!trimmed) {
-        toastApi.post({
-          title: 'No speech detected',
-          status: 'warning',
-          timeout: 3000,
-        });
-        return;
-      }
-      void copyTranscript(trimmed);
-      downloadTranscript(trimmed);
-      toastApi.post({
-        title: 'Transcript',
-        description: trimmed,
-        status: 'success',
-        timeout: 6000,
-      });
-    },
-    [toastApi],
-  );
-
-  const onError = useCallback(
-    (error: Error) => {
-      toastApi.post({
-        title: 'Mic AI failed',
-        description: error.message,
-        status: 'danger',
-        timeout: 4000,
-      });
-    },
-    [toastApi],
-  );
-
-  const { state, start, stop } = useVoiceTranscription({
-    onTranscript,
-    onError,
-  });
-
-  const recording = state === 'recording';
-  const visualLabel = recording
-    ? mode === 'hold'
-      ? `${label} (release)`
-      : `${label} (stop)`
-    : state === 'transcribing'
-      ? `${label} …`
-      : label;
-
-  if (mode === 'hold') {
-    return (
-      <HoldButton
-        label={visualLabel}
-        icon={icon}
-        recording={recording}
-        busy={state === 'transcribing'}
-        onStart={() => void start()}
-        onStop={stop}
-      />
-    );
+function getVisualLabel(
+  label: string,
+  mode: MicAiMode,
+  state: 'idle' | 'recording' | 'transcribing',
+): string {
+  if (state === 'recording') {
+    return mode === 'hold' ? `${label} (release)` : `${label} (stop)`;
   }
-
-  const handlePress = () => {
-    if (recording) {
-      stop();
-    } else if (state === 'idle') {
-      void start({ vad: mode === 'vad' });
-    }
-  };
-
-  return (
-    <Button
-      aria-label={visualLabel}
-      size="medium"
-      style={{ height: 'auto' }}
-      onPress={handlePress}
-      loading={state === 'transcribing'}
-    >
-      <Flex direction="column" align="center" gap="4" p="4">
-        {icon}
-        {visualLabel}
-      </Flex>
-    </Button>
-  );
-};
+  if (state === 'transcribing') {
+    return `${label} …`;
+  }
+  return label;
+}
 
 interface HoldButtonProps {
   label: string;
@@ -198,5 +123,88 @@ const HoldButton = ({
       {icon}
       {label}
     </button>
+  );
+};
+
+export const MicAiButton = ({ mode, icon, label }: MicAiButtonProps) => {
+  const toastApi = useApi(toastApiRef);
+
+  const onTranscript = useCallback(
+    (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) {
+        toastApi.post({
+          title: 'No speech detected',
+          status: 'warning',
+          timeout: 3000,
+        });
+        return;
+      }
+      void copyTranscript(trimmed);
+      downloadTranscript(trimmed);
+      toastApi.post({
+        title: 'Transcript',
+        description: trimmed,
+        status: 'success',
+        timeout: 6000,
+      });
+    },
+    [toastApi],
+  );
+
+  const onError = useCallback(
+    (error: Error) => {
+      toastApi.post({
+        title: 'Mic AI failed',
+        description: error.message,
+        status: 'danger',
+        timeout: 4000,
+      });
+    },
+    [toastApi],
+  );
+
+  const { state, start, stop } = useVoiceTranscription({
+    onTranscript,
+    onError,
+  });
+
+  const recording = state === 'recording';
+  const visualLabel = getVisualLabel(label, mode, state);
+
+  if (mode === 'hold') {
+    return (
+      <HoldButton
+        label={visualLabel}
+        icon={icon}
+        recording={recording}
+        busy={state === 'transcribing'}
+        onStart={() => void start()}
+        onStop={stop}
+      />
+    );
+  }
+
+  const handlePress = () => {
+    if (recording) {
+      stop();
+    } else if (state === 'idle') {
+      void start({ vad: mode === 'vad' });
+    }
+  };
+
+  return (
+    <Button
+      aria-label={visualLabel}
+      size="medium"
+      style={{ height: 'auto' }}
+      onPress={handlePress}
+      loading={state === 'transcribing'}
+    >
+      <Flex direction="column" align="center" gap="4" p="4">
+        {icon}
+        {visualLabel}
+      </Flex>
+    </Button>
   );
 };
