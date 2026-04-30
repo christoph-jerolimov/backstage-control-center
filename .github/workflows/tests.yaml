@@ -31,6 +31,8 @@ jobs:
 
       - run: yarn prettier:check
 
+      - run: yarn list-deprecations
+
       - run: yarn test
 
       - run: yarn playwright install chromium
