@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
-const configPath = `${process.env.GITHUB_WORKSPACE}/backstage`;
+const configPath = `${process.env.GITHUB_WORKSPACE}`;
 
 /**
  * See https://playwright.dev/docs/test-configuration
