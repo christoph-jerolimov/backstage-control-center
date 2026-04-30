@@ -20,7 +20,10 @@ const PRESETS: Record<SlackPreset, SlackStatusProfile> = {
   afk: { status_text: 'Away from keyboard', status_emoji: ':walking:' },
   focus: { status_text: 'Focusing', status_emoji: ':headphones:' },
   lunch: { status_text: 'Out for lunch', status_emoji: ':burrito:' },
-  meeting: { status_text: 'In a meeting', status_emoji: ':spiral_calendar_pad:' },
+  meeting: {
+    status_text: 'In a meeting',
+    status_emoji: ':spiral_calendar_pad:',
+  },
 };
 
 export type FetchLike = (

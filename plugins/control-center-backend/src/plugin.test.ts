@@ -102,7 +102,7 @@ describe('plugin', () => {
             listTodos: jest.fn().mockRejectedValue(new AuthenticationError()),
             getTodo: jest.fn().mockRejectedValue(new NotAllowedError()),
           }),
-        })
+        }),
       ],
     });
 

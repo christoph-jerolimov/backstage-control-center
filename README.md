@@ -8,14 +8,14 @@ The volume, mute, mic, and play/pause buttons in the control grid call the
 `control-center` backend, which shells out to `pactl` and `playerctl` on the
 host:
 
-| Button        | Command                                              |
-| ------------- | ---------------------------------------------------- |
-| Volume Up     | `pactl set-sink-volume @DEFAULT_SINK@ +5%`           |
-| Volume Down   | `pactl set-sink-volume @DEFAULT_SINK@ -5%`           |
-| Volume Mute   | `pactl set-sink-mute @DEFAULT_SINK@ toggle`          |
-| Mic On        | `pactl set-source-mute @DEFAULT_SOURCE@ 0`           |
-| Mic Off       | `pactl set-source-mute @DEFAULT_SOURCE@ 1`           |
-| Play / Pause  | `playerctl play` / `playerctl pause`                 |
+| Button       | Command                                     |
+| ------------ | ------------------------------------------- |
+| Volume Up    | `pactl set-sink-volume @DEFAULT_SINK@ +5%`  |
+| Volume Down  | `pactl set-sink-volume @DEFAULT_SINK@ -5%`  |
+| Volume Mute  | `pactl set-sink-mute @DEFAULT_SINK@ toggle` |
+| Mic On       | `pactl set-source-mute @DEFAULT_SOURCE@ 0`  |
+| Mic Off      | `pactl set-source-mute @DEFAULT_SOURCE@ 1`  |
+| Play / Pause | `playerctl play` / `playerctl pause`        |
 
 Only Linux is supported. `pactl` works against both PulseAudio and PipeWire's
 `pipewire-pulse` shim, so it works on every modern Wayland desktop without
@@ -47,10 +47,10 @@ GNOME Shell `Eval` D-Bus method has been locked down since GNOME 41), so the
 backend instead simulates the compositor's built-in tiling shortcuts via
 [`ydotool`](https://github.com/ReimuNotMoe/ydotool):
 
-| Button     | Keystroke sent  | Command                                |
-| ---------- | --------------- | -------------------------------------- |
-| Tile Left  | `Super` + `←`   | `ydotool key 125:1 105:1 105:0 125:0`  |
-| Tile Right | `Super` + `→`   | `ydotool key 125:1 106:1 106:0 125:0`  |
+| Button     | Keystroke sent | Command                               |
+| ---------- | -------------- | ------------------------------------- |
+| Tile Left  | `Super` + `←`  | `ydotool key 125:1 105:1 105:0 125:0` |
+| Tile Right | `Super` + `→`  | `ydotool key 125:1 106:1 106:0 125:0` |
 
 The keycodes (`125`, `105`, `106`) are `KEY_LEFTMETA`, `KEY_LEFT`, `KEY_RIGHT`
 from `linux/input-event-codes.h`. The host was tested on GNOME / Wayland,
@@ -80,13 +80,13 @@ Only Linux/Wayland is supported.
 The five **Status: …** buttons set the user's Slack status by calling Slack's
 `users.profile.set` Web API from the backend:
 
-| Button           | `status_text`         | `status_emoji`             |
-| ---------------- | --------------------- | -------------------------- |
-| Status: Online   | _(cleared)_           | _(cleared)_                |
-| Status: Afk      | `Away from keyboard`  | `:walking:`                |
-| Status: Focus    | `Focusing`            | `:headphones:`             |
-| Status: Lunch    | `Out for lunch`       | `:burrito:`                |
-| Status: Meeting  | `In a meeting`        | `:spiral_calendar_pad:`    |
+| Button          | `status_text`        | `status_emoji`          |
+| --------------- | -------------------- | ----------------------- |
+| Status: Online  | _(cleared)_          | _(cleared)_             |
+| Status: Afk     | `Away from keyboard` | `:walking:`             |
+| Status: Focus   | `Focusing`           | `:headphones:`          |
+| Status: Lunch   | `Out for lunch`      | `:burrito:`             |
+| Status: Meeting | `In a meeting`       | `:spiral_calendar_pad:` |
 
 Focus mode additionally enables Do Not Disturb for 60 minutes via
 `dnd.setSnooze`; switching back to **Online** ends the snooze.

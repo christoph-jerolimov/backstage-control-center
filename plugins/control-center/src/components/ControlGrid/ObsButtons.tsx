@@ -37,9 +37,21 @@ export const ObsButtons = () => {
   return (
     <>
       <Grid.Root columns="8" gap="4">
-        <MyButton icon={<div>⏺️</div>} label="OBS Record" path="/obs/recording/toggle" />
-        <MyButton icon={<div>📡</div>} label="OBS Stream" path="/obs/streaming/toggle" />
-        <MyButton icon={<div>📷</div>} label="OBS Virtual Cam" path="/obs/virtualcam/toggle" />
+        <MyButton
+          icon={<div>⏺️</div>}
+          label="OBS Record"
+          path="/obs/recording/toggle"
+        />
+        <MyButton
+          icon={<div>📡</div>}
+          label="OBS Stream"
+          path="/obs/streaming/toggle"
+        />
+        <MyButton
+          icon={<div>📷</div>}
+          label="OBS Virtual Cam"
+          path="/obs/virtualcam/toggle"
+        />
       </Grid.Root>
       {scenes.length > 0 && (
         <Grid.Root columns="8" gap="4">

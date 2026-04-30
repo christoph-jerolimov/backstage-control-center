@@ -118,20 +118,17 @@ describe('createRouter', () => {
     expect(response.body).toEqual(mockTodoItem);
   });
 
-  it.each([
-    ['online'],
-    ['afk'],
-    ['focus'],
-    ['lunch'],
-    ['meeting'],
-  ])('should set the Slack %s status', async preset => {
-    slackStatus.setPreset.mockResolvedValue();
+  it.each([['online'], ['afk'], ['focus'], ['lunch'], ['meeting']])(
+    'should set the Slack %s status',
+    async preset => {
+      slackStatus.setPreset.mockResolvedValue();
 
-    const response = await request(app).post(`/slack/status/${preset}`);
+      const response = await request(app).post(`/slack/status/${preset}`);
 
-    expect(response.status).toBe(204);
-    expect(slackStatus.setPreset).toHaveBeenCalledWith(preset);
-  });
+      expect(response.status).toBe(204);
+      expect(slackStatus.setPreset).toHaveBeenCalledWith(preset);
+    },
+  );
 
   it('should return system stats', async () => {
     const stats = {

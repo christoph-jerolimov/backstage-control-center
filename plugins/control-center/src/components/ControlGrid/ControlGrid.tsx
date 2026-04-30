@@ -25,14 +25,24 @@ import { ObsButtons } from './ObsButtons';
 import { HueButtons } from './HueButtons';
 import { ScriptButtons } from './ScriptButtons';
 
-const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?: string }) => {
+const Time = ({
+  label,
+  time,
+  timeZone,
+}: {
+  label: string;
+  time: Date;
+  timeZone?: string;
+}) => {
   return (
     <Flex direction="column" align="center" gap="4" p="4">
-      <div style={{ fontSize: '2em', fontWeight: 'bold' }}>{time.toLocaleTimeString('en-US', { timeStyle: 'short', timeZone })}</div>
+      <div style={{ fontSize: '2em', fontWeight: 'bold' }}>
+        {time.toLocaleTimeString('en-US', { timeStyle: 'short', timeZone })}
+      </div>
       <div style={{ fontSize: '2em', fontWeight: 'bold' }}>{label}</div>
     </Flex>
   );
-}
+};
 
 export const ControlGrid = () => {
   const [time, setTime] = useState(new Date());
@@ -52,15 +62,43 @@ export const ControlGrid = () => {
         {compatWrapper(<HomePageCalendar />)}
       </Grid.Root>
       <Grid.Root columns="8" gap="4">
-        <MyButton icon={<RiVolumeMuteFill />} label="Volume Mute" path="/audio/volume-mute" />
-        <MyButton icon={<RiVolumeDownFill />} label="Volume Down" path="/audio/volume-down" />
-        <MyButton icon={<RiVolumeUpFill />} label="Volume Up" path="/audio/volume-up" />
-        <MyButton icon={<RiSkipBackFill />} label="Previous" path="/media/previous" />
+        <MyButton
+          icon={<RiVolumeMuteFill />}
+          label="Volume Mute"
+          path="/audio/volume-mute"
+        />
+        <MyButton
+          icon={<RiVolumeDownFill />}
+          label="Volume Down"
+          path="/audio/volume-down"
+        />
+        <MyButton
+          icon={<RiVolumeUpFill />}
+          label="Volume Up"
+          path="/audio/volume-up"
+        />
+        <MyButton
+          icon={<RiSkipBackFill />}
+          label="Previous"
+          path="/media/previous"
+        />
         <MyButton icon={<RiPlayLargeFill />} label="Play" path="/media/play" />
-        <MyButton icon={<RiPauseLargeFill />} label="Pause" path="/media/pause" />
-        <MyButton icon={<RiSkipForwardFill />} label="Next" path="/media/next" />
+        <MyButton
+          icon={<RiPauseLargeFill />}
+          label="Pause"
+          path="/media/pause"
+        />
+        <MyButton
+          icon={<RiSkipForwardFill />}
+          label="Next"
+          path="/media/next"
+        />
         <MyButton icon={<RiMicLine />} label="Mic On" path="/audio/mic-on" />
-        <MyButton icon={<RiMicOffLine />} label="Mic Off" path="/audio/mic-off" />
+        <MyButton
+          icon={<RiMicOffLine />}
+          label="Mic Off"
+          path="/audio/mic-off"
+        />
         <MicAiButton mode="toggle" icon={<RiMicAiLine />} label="Mic AI" />
         <MicAiButton mode="hold" icon={<RiMicLine />} label="Mic AI hold" />
         <MicAiButton mode="vad" icon={<RiMicAiFill />} label="Mic AI auto" />
@@ -70,15 +108,43 @@ export const ControlGrid = () => {
       <HueButtons />
       <ScriptButtons />
       <Grid.Root columns="8" gap="4">
-        <MyButton icon={<RiLayoutLeft2Fill />} label="Tile Left" path="/window/tile-left" />
-        <MyButton icon={<RiLayoutRight2Fill />} label="Tile Right" path="/window/tile-right" />
+        <MyButton
+          icon={<RiLayoutLeft2Fill />}
+          label="Tile Left"
+          path="/window/tile-left"
+        />
+        <MyButton
+          icon={<RiLayoutRight2Fill />}
+          label="Tile Right"
+          path="/window/tile-right"
+        />
       </Grid.Root>
       <Grid.Root columns="8" gap="4">
-        <MyButton icon={<div>👩🏻‍💻</div>} label="Status: Online" path="/slack/status/online" />
-        <MyButton icon={<div>💬</div>} label="Status: Afk" path="/slack/status/afk" />
-        <MyButton icon={<div>🎧</div>} label="Status: Focus" path="/slack/status/focus" />
-        <MyButton icon={<div>🌯</div>} label="Status: Lunch" path="/slack/status/lunch" />
-        <MyButton icon={<div>💬</div>} label="Status: Meeting" path="/slack/status/meeting" />
+        <MyButton
+          icon={<div>👩🏻‍💻</div>}
+          label="Status: Online"
+          path="/slack/status/online"
+        />
+        <MyButton
+          icon={<div>💬</div>}
+          label="Status: Afk"
+          path="/slack/status/afk"
+        />
+        <MyButton
+          icon={<div>🎧</div>}
+          label="Status: Focus"
+          path="/slack/status/focus"
+        />
+        <MyButton
+          icon={<div>🌯</div>}
+          label="Status: Lunch"
+          path="/slack/status/lunch"
+        />
+        <MyButton
+          icon={<div>💬</div>}
+          label="Status: Meeting"
+          path="/slack/status/meeting"
+        />
       </Grid.Root>
     </Flex>
   );

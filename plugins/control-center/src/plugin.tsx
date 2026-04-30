@@ -24,5 +24,5 @@ export const controlCenterPlugin = createFrontendPlugin({
   extensions: [page],
   routes: {
     root: rootRouteRef,
-  }
+  },
 });

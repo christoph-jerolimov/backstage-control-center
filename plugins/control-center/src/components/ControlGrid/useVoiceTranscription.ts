@@ -156,14 +156,11 @@ export function useVoiceTranscription({
 
   const upload = useCallback(
     async (blob: Blob) => {
-      const response = await fetch(
-        'plugin://control-center/ai/transcribe',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': blob.type || 'audio/webm' },
-          body: blob,
-        },
-      );
+      const response = await fetch('plugin://control-center/ai/transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': blob.type || 'audio/webm' },
+        body: blob,
+      });
       if (!response.ok) {
         const detail = await response.text().catch(() => '');
         throw new Error(
