@@ -10,6 +10,9 @@ import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
 import { systemStatsServiceRef } from './services/SystemStatsService';
 import { playlistServiceRef } from './services/PlaylistService';
+import { obsServiceRef } from './services/OBSService';
+import { hueServiceRef } from './services/HueService';
+import { scriptsServiceRef } from './services/ScriptsService';
 
 const AUDIO_FILENAMES: Array<[string, string]> = [
   ['webm', 'audio.webm'],
@@ -34,6 +37,9 @@ export async function createRouter({
   whisper,
   systemStats,
   playlist,
+  obs,
+  hue,
+  scripts,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
@@ -43,6 +49,9 @@ export async function createRouter({
   whisper: typeof whisperServiceRef.T;
   systemStats: typeof systemStatsServiceRef.T;
   playlist: typeof playlistServiceRef.T;
+  obs: typeof obsServiceRef.T;
+  hue: typeof hueServiceRef.T;
+  scripts: typeof scriptsServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -114,6 +123,39 @@ export async function createRouter({
     res.status(204).end();
   });
 
+  router.get('/obs/scenes', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    res.json(obs.listScenes());
+  });
+
+  router.post('/obs/scenes/:id', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    await obs.setScene(req.params.id);
+    res.status(204).end();
+  });
+
+  router.get('/hue/scenes', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    res.json(hue.listScenes());
+  });
+
+  router.post('/hue/scenes/:id', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    await hue.activateScene(req.params.id);
+    res.status(204).end();
+  });
+
+  router.get('/scripts', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    res.json(scripts.list());
+  });
+
+  router.post('/scripts/:id/run', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    await scripts.run(req.params.id);
+    res.status(204).end();
+  });
+
   const commandActions: Record<string, () => Promise<void>> = {
     '/audio/volume-up': () => audioControl.volumeUp(),
     '/audio/volume-down': () => audioControl.volumeDown(),
@@ -131,6 +173,9 @@ export async function createRouter({
     '/slack/status/focus': () => slackStatus.setPreset('focus'),
     '/slack/status/lunch': () => slackStatus.setPreset('lunch'),
     '/slack/status/meeting': () => slackStatus.setPreset('meeting'),
+    '/obs/recording/toggle': () => obs.toggleRecording(),
+    '/obs/streaming/toggle': () => obs.toggleStreaming(),
+    '/obs/virtualcam/toggle': () => obs.toggleVirtualCam(),
   };
 
   for (const [path, run] of Object.entries(commandActions)) {

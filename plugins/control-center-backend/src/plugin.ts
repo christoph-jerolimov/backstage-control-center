@@ -10,6 +10,9 @@ import { slackStatusServiceRef } from './services/SlackStatusService';
 import { whisperServiceRef } from './services/WhisperService';
 import { systemStatsServiceRef } from './services/SystemStatsService';
 import { playlistServiceRef } from './services/PlaylistService';
+import { obsServiceRef } from './services/OBSService';
+import { hueServiceRef } from './services/HueService';
+import { scriptsServiceRef } from './services/ScriptsService';
 
 /**
  * controlCenterPlugin backend plugin
@@ -30,6 +33,9 @@ export const controlCenterPlugin = createBackendPlugin({
         whisper: whisperServiceRef,
         systemStats: systemStatsServiceRef,
         playlist: playlistServiceRef,
+        obs: obsServiceRef,
+        hue: hueServiceRef,
+        scripts: scriptsServiceRef,
       },
       async init({
         httpAuth,
@@ -41,6 +47,9 @@ export const controlCenterPlugin = createBackendPlugin({
         whisper,
         systemStats,
         playlist,
+        obs,
+        hue,
+        scripts,
       }) {
         httpRouter.use(
           await createRouter({
@@ -52,6 +61,9 @@ export const controlCenterPlugin = createBackendPlugin({
             whisper,
             systemStats,
             playlist,
+            obs,
+            hue,
+            scripts,
           }),
         );
       },

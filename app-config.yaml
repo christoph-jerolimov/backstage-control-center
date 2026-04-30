@@ -95,6 +95,58 @@ openai:
 #     provider: qobuz
 #     uri: https://play.qobuz.com/playlist/12345
 
+# OBS Studio control via obs-websocket v5 (built into OBS 28+). The static
+# Record/Stream/VirtualCam buttons always render; the obs.scenes list adds
+# one button per scene. Set obs.password to the password configured in
+# OBS → Tools → WebSocket Server Settings.
+# obs:
+#   url: ws://localhost:4455
+#   password: ${OBS_WEBSOCKET_PASSWORD}
+#   scenes:
+#     - id: live
+#       label: Live
+#       icon: 🔴
+#       scene: Live          # exact OBS scene name
+#     - id: brb
+#       label: BRB
+#       icon: ☕
+#       scene: BRB
+
+# Philips Hue control via the local Bridge HTTP API. Set hue.bridge to the
+# Bridge IP and hue.username to a Bridge API user (see
+# https://developers.meethue.com/develop/get-started-2/). Each entry under
+# hue.scenes activates a scene on a group via `PUT /api/<u>/groups/<g>/action`.
+# hue:
+#   bridge: 192.168.1.10
+#   username: ${HUE_USERNAME}
+#   scenes:
+#     - id: focus
+#       label: Lights: Focus
+#       icon: 🎯
+#       group: '1'           # Hue group/room id
+#       scene: AbCdEf123     # Hue scene id
+#     - id: relax
+#       label: Lights: Relax
+#       icon: 🛋️
+#       group: '1'
+#       scene: GhIjKl456
+
+# Arbitrary shell commands exposed as buttons. The frontend only sends the
+# `id`; the backend runs `execFile(command, args)` (no shell, no
+# user-supplied input). Optional per-script timeoutMs (default 5000).
+# scripts:
+#   - id: deploy
+#     label: Deploy
+#     icon: 🚀
+#     command: /usr/local/bin/deploy.sh
+#     args: [--prod]
+#     timeoutMs: 30000
+#   - id: lock
+#     label: Lock screen
+#     icon: 🔒
+#     command: loginctl
+#     args: [lock-session]
+
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.

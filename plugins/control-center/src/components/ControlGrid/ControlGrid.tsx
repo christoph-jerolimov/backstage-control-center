@@ -1,11 +1,6 @@
-import {
-  fetchApiRef,
-  toastApiRef,
-  useApi,
-} from '@backstage/frontend-plugin-api';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { HomePageCalendar } from '@backstage-community/plugin-gcalendar';
-import { Button, Flex, Grid } from '@backstage/ui';
+import { Flex, Grid } from '@backstage/ui';
 import {
   RiLayoutLeft2Fill,
   RiLayoutRight2Fill,
@@ -21,17 +16,14 @@ import {
   RiVolumeMuteFill,
   RiVolumeUpFill,
 } from '@remixicon/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MicAiButton } from './MicAiButtons';
 import { SystemStatsCards } from './SystemStatsCards';
-
-type PlaylistEntry = {
-  id: string;
-  label: string;
-  icon?: string;
-  provider: 'spotify' | 'qobuz';
-  uri: string;
-};
+import { MyButton } from './MyButton';
+import { PlaylistButtons } from './PlaylistButtons';
+import { ObsButtons } from './ObsButtons';
+import { HueButtons } from './HueButtons';
+import { ScriptButtons } from './ScriptButtons';
 
 const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?: string }) => {
   return (
@@ -42,91 +34,12 @@ const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?:
   );
 }
 
-const MyButton = ({
-  icon,
-  label,
-  path,
-}: {
-  icon: React.ReactElement;
-  label: string;
-  path?: string;
-}) => {
-  const toastApi = useApi(toastApiRef);
-  const { fetch } = useApi(fetchApiRef);
-
-  const [active, setActive] = useState(false);
-
-  const handlePress = async () => {
-    setActive(true);
-    try {
-      if (path) {
-        const response = await fetch(`plugin://control-center${path}`, {
-          method: 'POST',
-        });
-        if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
-        }
-      } else {
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-      toastApi.post({
-        title: 'Done!',
-        status: 'success',
-        timeout: 1000,
-      });
-    } catch (err) {
-      toastApi.post({
-        title: 'Failed',
-        description: err instanceof Error ? err.message : String(err),
-        status: 'danger',
-        timeout: 3000,
-      });
-    } finally {
-      setActive(false);
-    }
-  };
-
-  return (
-    <Button
-      aria-label={label}
-      size="medium"
-      style={{ height: 'auto' }}
-      onPress={handlePress}
-      loading={active}
-    >
-      <Flex direction="column" align="center" gap="4" p="4">
-        {icon}
-        {label}
-      </Flex>
-    </Button>
-  );
-};
-
 export const ControlGrid = () => {
   const [time, setTime] = useState(new Date());
   // update time every 10 seconds
   setInterval(() => {
     setTime(new Date());
   }, 10000);
-
-  const { fetch } = useApi(fetchApiRef);
-  const [playlists, setPlaylists] = useState<PlaylistEntry[]>([]);
-  useEffect(() => {
-    let cancelled = false;
-    fetch('plugin://control-center/playlists')
-      .then(res => (res.ok ? res.json() : []))
-      .then(data => {
-        if (!cancelled && Array.isArray(data)) {
-          setPlaylists(data);
-        }
-      })
-      .catch(() => {
-        // Silently ignore: empty list just hides the row.
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [fetch]);
 
   return (
     <Flex direction="column" gap="4" py="4">
@@ -152,18 +65,10 @@ export const ControlGrid = () => {
         <MicAiButton mode="hold" icon={<RiMicLine />} label="Mic AI hold" />
         <MicAiButton mode="vad" icon={<RiMicAiFill />} label="Mic AI auto" />
       </Grid.Root>
-      {playlists.length > 0 && (
-        <Grid.Root columns="8" gap="4">
-          {playlists.map(p => (
-            <MyButton
-              key={p.id}
-              icon={<div>{p.icon ?? '🎵'}</div>}
-              label={p.label}
-              path={`/playlists/${p.id}/play`}
-            />
-          ))}
-        </Grid.Root>
-      )}
+      <PlaylistButtons />
+      <ObsButtons />
+      <HueButtons />
+      <ScriptButtons />
       <Grid.Root columns="8" gap="4">
         <MyButton icon={<RiLayoutLeft2Fill />} label="Tile Left" path="/window/tile-left" />
         <MyButton icon={<RiLayoutRight2Fill />} label="Tile Right" path="/window/tile-right" />
