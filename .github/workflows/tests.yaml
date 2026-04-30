@@ -25,6 +25,8 @@ jobs:
 
       - run: yarn install --frozen-lockfile
 
+      - run: yarn tsc
+
       - run: yarn build:all
 
       - run: yarn lint:all
