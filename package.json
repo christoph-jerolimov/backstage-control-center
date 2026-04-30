@@ -20,6 +20,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "list-deprecations": "yarn backstage-cli repo list-deprecations",
     "new": "backstage-cli new"
   },
