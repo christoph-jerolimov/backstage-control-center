@@ -46,8 +46,9 @@ type WebSocketLike = {
 export type WebSocketFactory = (url: string) => WebSocketLike;
 
 const defaultWebSocketFactory: WebSocketFactory = url => {
-  const Ctor = (globalThis as { WebSocket?: new (url: string) => WebSocketLike })
-    .WebSocket;
+  const Ctor = (
+    globalThis as { WebSocket?: new (url: string) => WebSocketLike }
+  ).WebSocket;
   if (!Ctor) {
     throw new Error('Global WebSocket is not available (requires Node 22+).');
   }
@@ -78,8 +79,7 @@ export class OBSService {
     config: RootConfigService,
     logger: LoggerService,
   ): ObsConfig {
-    const url =
-      config.getOptionalString('obs.url') ?? 'ws://localhost:4455';
+    const url = config.getOptionalString('obs.url') ?? 'ws://localhost:4455';
     const password = config.getOptionalString('obs.password') || undefined;
     const rawScenes = config.getOptionalConfigArray('obs.scenes') ?? [];
     const scenes: OBSSceneEntry[] = [];
@@ -163,7 +163,9 @@ export class OBSService {
   ): Promise<Record<string, unknown>> {
     const ws = this.#wsFactory(this.#config.url);
     return await new Promise<Record<string, unknown>>((resolve, reject) => {
-      const requestId = `req-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      const requestId = `req-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2)}`;
       const closeWs = () => {
         try {
           ws.close();
@@ -204,7 +206,9 @@ export class OBSService {
             if (!this.#config.password) {
               cleanup();
               reject(
-                new Error('OBS requested authentication but obs.password is unset'),
+                new Error(
+                  'OBS requested authentication but obs.password is unset',
+                ),
               );
               return;
             }

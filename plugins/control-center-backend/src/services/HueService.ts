@@ -120,7 +120,9 @@ export class HueService {
       throw new Error('Hue is not configured');
     }
     await this.#put(
-      `/api/${encodeURIComponent(this.#config.username)}/groups/${encodeURIComponent(entry.group)}/action`,
+      `/api/${encodeURIComponent(
+        this.#config.username,
+      )}/groups/${encodeURIComponent(entry.group)}/action`,
       { scene: entry.scene },
     );
     this.#logger.info('Activated Hue scene', {

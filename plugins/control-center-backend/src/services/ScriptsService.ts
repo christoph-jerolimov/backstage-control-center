@@ -43,10 +43,7 @@ export class ScriptsService {
     config: RootConfigService;
     runCmd?: RunCmd;
   }) {
-    const entries = ScriptsService.#loadEntries(
-      options.config,
-      options.logger,
-    );
+    const entries = ScriptsService.#loadEntries(options.config, options.logger);
     const service = new ScriptsService(
       options.logger,
       options.runCmd ?? defaultRunCmd,
@@ -68,8 +65,7 @@ export class ScriptsService {
       const label = item.getOptionalString('label');
       const command = item.getOptionalString('command');
       const icon = item.getOptionalString('icon');
-      const args =
-        item.getOptionalStringArray('args')?.map(String) ?? [];
+      const args = item.getOptionalStringArray('args')?.map(String) ?? [];
       const timeoutMs =
         item.getOptionalNumber('timeoutMs') ?? DEFAULT_TIMEOUT_MS;
       if (!id || !label || !command) {
@@ -129,7 +125,9 @@ export class ScriptsService {
       });
     } catch (err) {
       this.#logger.warn(
-        `script "${entry.id}" (${entry.command} ${entry.args.join(' ')}) failed`,
+        `script "${entry.id}" (${entry.command} ${entry.args.join(
+          ' ',
+        )}) failed`,
         { error: String(err) },
       );
       throw new Error(`script "${entry.id}" failed`);

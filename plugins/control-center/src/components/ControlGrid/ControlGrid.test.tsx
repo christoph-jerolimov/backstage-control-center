@@ -9,7 +9,7 @@ describe('ControlGrid', () => {
     //   { id: '2', title: 'Second task', createdBy: 'user:default/admin', createdAt: '2025-01-02T00:00:00.000Z' },
     // ];
 
-    await renderInTestApp(<ControlGrid/>);
+    await renderInTestApp(<ControlGrid />);
 
     // TODO
     // expect(await screen.findByText('First task')).toBeInTheDocument();
