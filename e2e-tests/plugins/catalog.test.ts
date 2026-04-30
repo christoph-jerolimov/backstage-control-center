@@ -11,5 +11,5 @@ test('Catalog', async ({ backstage }) => {
 
   await backstage.sidebarItem('Catalog').click();
 
-  await expect(backstage.header.getByText('Demo Catalog')).toBeVisible();
+  await expect(backstage.header.getByText('My Company Catalog')).toBeVisible();
 });
