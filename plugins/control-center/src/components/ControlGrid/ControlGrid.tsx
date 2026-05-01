@@ -24,6 +24,7 @@ import { PlaylistButtons } from './PlaylistButtons';
 import { ObsButtons } from './ObsButtons';
 import { HueButtons } from './HueButtons';
 import { ScriptButtons } from './ScriptButtons';
+import { DiscordButtons } from './DiscordButtons';
 
 const Time = ({
   label,
@@ -146,6 +147,7 @@ export const ControlGrid = () => {
           path="/slack/status/meeting"
         />
       </Grid.Root>
+      <DiscordButtons />
     </Flex>
   );
 };
