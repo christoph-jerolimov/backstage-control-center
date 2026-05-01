@@ -76,15 +76,19 @@ export class DiscordService {
         );
         continue;
       }
-      if (!url.startsWith('https://discord.com/api/webhooks/') &&
-          !url.startsWith('https://discordapp.com/api/webhooks/')) {
+      if (
+        !url.startsWith('https://discord.com/api/webhooks/') &&
+        !url.startsWith('https://discordapp.com/api/webhooks/')
+      ) {
         logger.warn(
           `Skipping Discord webhook entry "${id}": url must be a discord.com webhook URL.`,
         );
         continue;
       }
       if (seen.has(id)) {
-        logger.warn(`Skipping Discord webhook entry with duplicate id "${id}".`);
+        logger.warn(
+          `Skipping Discord webhook entry with duplicate id "${id}".`,
+        );
         continue;
       }
       seen.add(id);
