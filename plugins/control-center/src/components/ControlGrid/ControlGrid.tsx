@@ -24,6 +24,7 @@ import { PlaylistButtons } from './PlaylistButtons';
 import { ObsButtons } from './ObsButtons';
 import { HueButtons } from './HueButtons';
 import { ScriptButtons } from './ScriptButtons';
+import { DiscordButtons } from './DiscordButtons';
 
 const Time = ({ label, time, timeZone }: { label: string, time: Date; timeZone?: string }) => {
   return (
@@ -80,6 +81,7 @@ export const ControlGrid = () => {
         <MyButton icon={<div>🌯</div>} label="Status: Lunch" path="/slack/status/lunch" />
         <MyButton icon={<div>💬</div>} label="Status: Meeting" path="/slack/status/meeting" />
       </Grid.Root>
+      <DiscordButtons />
     </Flex>
   );
 };

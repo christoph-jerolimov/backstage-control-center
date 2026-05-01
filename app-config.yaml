@@ -147,6 +147,26 @@ openai:
 #     command: loginctl
 #     args: [lock-session]
 
+# Discord webhook quick-send buttons. Each entry posts a message to a
+# Discord channel via an Incoming Webhook URL (Server Settings →
+# Integrations → Webhooks → Copy Webhook URL). Defaults to sending the
+# `label` as the message content; override with `content`. Optional
+# `username` and `avatarUrl` override the webhook's display identity for
+# this single message. The button row is hidden when this list is empty.
+# discord:
+#   webhooks:
+#     - id: standup
+#       label: Standup ping
+#       icon: 🗣️
+#       url: ${DISCORD_WEBHOOK_STANDUP}
+#       content: '@here standup in 5'
+#     - id: deployed
+#       label: Deployed!
+#       icon: 🚀
+#       url: ${DISCORD_WEBHOOK_RELEASES}
+#       content: ':rocket: shipped a new build to prod'
+#       username: ReleaseBot
+
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.

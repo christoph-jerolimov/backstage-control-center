@@ -13,6 +13,7 @@ import { playlistServiceRef } from './services/PlaylistService';
 import { obsServiceRef } from './services/OBSService';
 import { hueServiceRef } from './services/HueService';
 import { scriptsServiceRef } from './services/ScriptsService';
+import { discordServiceRef } from './services/DiscordService';
 
 const AUDIO_FILENAMES: Array<[string, string]> = [
   ['webm', 'audio.webm'],
@@ -40,6 +41,7 @@ export async function createRouter({
   obs,
   hue,
   scripts,
+  discord,
 }: {
   httpAuth: HttpAuthService;
   todoList: typeof todoListServiceRef.T;
@@ -52,6 +54,7 @@ export async function createRouter({
   obs: typeof obsServiceRef.T;
   hue: typeof hueServiceRef.T;
   scripts: typeof scriptsServiceRef.T;
+  discord: typeof discordServiceRef.T;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -153,6 +156,17 @@ export async function createRouter({
   router.post('/scripts/:id/run', async (req, res) => {
     await httpAuth.credentials(req, { allow: ['user'] });
     await scripts.run(req.params.id);
+    res.status(204).end();
+  });
+
+  router.get('/discord/webhooks', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    res.json(discord.listWebhooks());
+  });
+
+  router.post('/discord/webhooks/:id/send', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+    await discord.sendWebhook(req.params.id);
     res.status(204).end();
   });
 
