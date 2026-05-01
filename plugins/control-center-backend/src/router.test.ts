@@ -17,6 +17,7 @@ import { playlistServiceRef } from './services/PlaylistService';
 import { obsServiceRef } from './services/OBSService';
 import { hueServiceRef } from './services/HueService';
 import { scriptsServiceRef } from './services/ScriptsService';
+import { discordServiceRef } from './services/DiscordService';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -39,6 +40,7 @@ describe('createRouter', () => {
   let obs: jest.Mocked<typeof obsServiceRef.T>;
   let hue: jest.Mocked<typeof hueServiceRef.T>;
   let scripts: jest.Mocked<typeof scriptsServiceRef.T>;
+  let discord: jest.Mocked<typeof discordServiceRef.T>;
 
   beforeEach(async () => {
     todoList = {
@@ -89,6 +91,10 @@ describe('createRouter', () => {
       list: jest.fn().mockReturnValue([]),
       run: jest.fn(),
     };
+    discord = {
+      listWebhooks: jest.fn().mockReturnValue([]),
+      sendWebhook: jest.fn(),
+    };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
       todoList,
@@ -101,6 +107,7 @@ describe('createRouter', () => {
       obs,
       hue,
       scripts,
+      discord,
     });
     app = express();
     app.use(router);
@@ -188,6 +195,15 @@ describe('createRouter', () => {
 
     expect(response.status).toBe(204);
     expect(scripts.run).toHaveBeenCalledWith('deploy');
+  });
+
+  it('should send a Discord webhook by id', async () => {
+    discord.sendWebhook.mockResolvedValue();
+
+    const response = await request(app).post('/discord/webhooks/standup/send');
+
+    expect(response.status).toBe(204);
+    expect(discord.sendWebhook).toHaveBeenCalledWith('standup');
   });
 
   it('should not allow unauthenticated requests to create a TODO', async () => {
