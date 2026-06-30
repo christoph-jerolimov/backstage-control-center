@@ -17,7 +17,13 @@ export class Backstage {
   }
 
   get header() {
-    return this.page.locator('header, .bui-Header, .bui-HeaderPage');
+    return this.page.locator(
+      'header, .bui-PluginHeader, .bui-Header, .bui-HeaderPage, .bui-HeaderTop, .bui-HeaderContent',
+    );
+  }
+
+  get pluginHeader() {
+    return this.page.locator('.bui-PluginHeader');
   }
 
   get tabs() {
@@ -25,7 +31,9 @@ export class Backstage {
   }
 
   get content() {
-    return this.page.locator('article, .bui-Header + *, .bui-HeaderPage + *');
+    return this.page.locator(
+      'article, .bui-Header + *, .bui-HeaderPage + *, .bui-HeaderBottom + *',
+    );
   }
 
   sidebarItem(name: string) {
