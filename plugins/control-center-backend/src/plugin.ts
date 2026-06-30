@@ -13,6 +13,7 @@ import { playlistServiceRef } from './services/PlaylistService';
 import { obsServiceRef } from './services/OBSService';
 import { hueServiceRef } from './services/HueService';
 import { scriptsServiceRef } from './services/ScriptsService';
+import { discordServiceRef } from './services/DiscordService';
 
 /**
  * controlCenterPlugin backend plugin
@@ -36,6 +37,7 @@ export const controlCenterPlugin = createBackendPlugin({
         obs: obsServiceRef,
         hue: hueServiceRef,
         scripts: scriptsServiceRef,
+        discord: discordServiceRef,
       },
       async init({
         httpAuth,
@@ -50,6 +52,7 @@ export const controlCenterPlugin = createBackendPlugin({
         obs,
         hue,
         scripts,
+        discord,
       }) {
         httpRouter.use(
           await createRouter({
@@ -64,6 +67,7 @@ export const controlCenterPlugin = createBackendPlugin({
             obs,
             hue,
             scripts,
+            discord,
           }),
         );
       },
